@@ -137,8 +137,8 @@ ALTER TABLE TABLENAME
 [DROP[COLUMN] columnName [RESTRICT|CASCADE]]
 [ADD[CONSTRAINT][ConstraintName] tableConstraintDefination]
 [DROP CONSTRAINT ConstraintName[RESTRICT|CASCADE]]
-[ALTER[COLUMN] SET DEFAULT defaultOption]
-[ALTER[COLUMN] DROP DEFAULT]
+[MODIFY[COLUMN] datatype SET DEFAULT defaultOption]
+[MODIFY[COLUMN] datatype DROP DEFAULT]
 ```
 
 > 即，在创建表之后，如果想要修改表结构，可以通过 ALTER TABLE来更改表结构。
@@ -150,8 +150,8 @@ ALTER TABLE TABLENAME
 ```mysql
 alter table s add column addr char(20);
 alter table s drop column addr;
-alter table staff alter position drop default;
-alter table stadd alter sex set default 'F';
+alter table staff modify position varchar(20) drop default;
+alter table stadd modify sex set varchar(1) default 'F';
 alter table property drop constraint staffNotHandlingTooMuch;
 alter table s add constraint sex_age check((sex = 'F' AND age < 21) || (sex = 'M' AND age < 23));
 alter table s drop constraint sex_age;
