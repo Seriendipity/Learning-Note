@@ -334,3 +334,95 @@ EXEC SQL SELECT fName,IName,address
 		WHERE ownerNo = 'CO21';
 ```
 
+> **游标**
+
+​	当数据库查询返回不止一行元组的时候，需要使用 **游标** 。游标允许宿主语言一次访问查询结果中的一行。
+
+* 游标相当于一个指针，最开始指向表头（第零行）
+* **游标必须声明和开启，结束之后必须关闭。**
+* 使用FETCH来获取游标所指行的数据。
+
+举个栗子：
+
+```C
+//声明游标
+EXEC SQL DECLARE propertyCursor 
+CURSOR FOR SELECT propertyNo,street,city
+			FROM PropertyForRent
+			WHERE staffNo = 'SL41';
+//开启游标
+EXEC SQL OPEN propertyCursor;
+
+// 将数据库结果保存到宿主语言中
+while(SQLCODE != NOT FOUND){
+    EXEC SQL FETCH propertyCursor
+        INTO :propertyNo,:street,:city
+}
+
+//关闭游标
+EXEC SQL CLOSE propertyCursor;
+
+```
+
+### 2.2 动态SQL
+
+​	动态SQL允许部分或者全部的SQL语句在运行时被赋值。
+
+> ***静态SQL不允许用共享变量替代数据库对象名。***
+
+举个栗子：
+
+```
+EXEC SQL BEGIN DECLARE SECTION;
+char TableName[2];
+EXEC SQL END DECLARE SECTION;
+
+//在静态SQL中不允许这样写，但是动态SQL允许
+EXEC SQL INSERT INTO :TableName
+	VALUES('S12','John',18,'m');
+```
+
+两种类型的动态SQL：
+
+* EXECUTE IMMEDIATE（立即执行）
+* PREPARE AND EXEcute（准备执行）
+
+#### 2.2.1 立即执行
+
+如果SQL语句不包含SELECT语句，使用立即执行的动态SQL具有如下格式：
+
+```
+EXEC SQL EXECUTE IMMEDIATE [hostVariable | StringLiteral]
+```
+
+​	上述语句允许SQL语句存储在共享变量或者字符串常量中。他不能够传递参数。
+
+举个栗子：
+
+```C
+//增加‘SL21’员工的薪水
+EXEC SQL BEGIN DECLARE SECTION;
+char buffer[100];
+EXEC SQL END DECLARE SECTION;
+
+sprintf(buffer,"UPDATE Staff SET salary = salary + %f WHERE staffNo = 'SL21'",increment);
+
+EXEC SQL EXECUTE IMMEDIATE :buffer;
+```
+
+#### 2.2.2 准备执行
+
+```
+EXEC SQL PREPARE statementName
+	FROM [hostVariable | stringLiteral]
+EXEC SQL EXECUTE statementName
+	[USING hostVariable[indicator Variable][,...]]
+	| USING DESCRIPTOR descriptorName]
+```
+
+## 3. API
+
+#### 3.1 ODBC
+
+#### 3.2 JDBC
+
