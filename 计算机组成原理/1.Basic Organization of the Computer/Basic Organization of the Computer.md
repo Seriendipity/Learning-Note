@@ -121,7 +121,7 @@ FLOPS (Floating Point Operation Per Second)
 
 ### 1.4.2 The diagram of von Neumann Computer
 
-![](C:\Users\MHB\Desktop\von Neumann diagram.png)
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/1.Basic%20Organization%20of%20the%20Computer/pictures/von_Neumann_diagram.png)
 
 This first kind of computer is centered on ALU. 
 
