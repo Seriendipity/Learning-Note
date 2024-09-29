@@ -137,7 +137,7 @@ Another kind of computer is centered on Memory , for the data and instructions a
 
 ### 1.4.3 Modern computer hardware diagram
 
-![](C:\Users\MHB\Desktop\_     Modern computer hardware diagram.png)
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/1.Basic%20Organization%20of%20the%20Computer/pictures/Modern_computer_hardware_diagram.png)
 
 The five main components of computer work orderly under the instructions of controller. 
 
@@ -149,7 +149,7 @@ The **CU** (Control Unit) is used to send out operation command to execute comma
 
 Thus the modern computer components diagram is as followed:
 
-![](C:\Users\MHB\Desktop\modern computer components diagram.png)
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/1.Basic%20Organization%20of%20the%20Computer/pictures/modern_computer_components_diagram.png)
 
 ## 1.5 Computer Working Process
 
@@ -181,7 +181,7 @@ Assuming that we are going to calculate
 $$
 ax^2 + bx + c
 $$
-![](C:\Users\MHB\Desktop\Instruction example.png)
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/1.Basic%20Organization%20of%20the%20Computer/pictures/Instruction_example.png)
 
 Now let us detail the working process.
 
@@ -217,7 +217,7 @@ for **Execute** : CU(Executing instruction)
 
 Then take an example of fetch instruction:
 
-![](C:\Users\MHB\Desktop\Detail fetch Instruction.png)
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/1.Basic%20Organization%20of%20the%20Computer/pictures/Detail_fetch_Instruction.png)
 
 First PC store the current instructions address to be executed, so the CU send the content to the MAR(PC-->MAR) and command the Memory to read.
 
