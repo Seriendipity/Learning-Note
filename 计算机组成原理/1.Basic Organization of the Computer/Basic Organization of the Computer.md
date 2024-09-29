@@ -1,4 +1,3 @@
-
 # 一、Introduction
 
 > * **Introduction:** for the final examination is in English and should use English to write answer, I am going to use English to record my learning experience
@@ -108,4 +107,137 @@ CPI (Cycle Per Instruction) is to execute one instruction and to see how   much 
 FLOPS (Floating Point Operation Per Second)
 
 ## 1.4 von Neumann Computer
+
+### 1.4.1 The Characteristics of von Neumann Computer
+
+> The computer consists of **Five** main components : **Operator, Memory , Input , Output, Controller**
+
+* Instructions and data are stored in memory in the equal status, and can be accessed by address.
+
+* Instructions and data are represented by binary
+* The instructions consists of **an opcode** and **an address code**.
+* Instructions are stored sequentially in memory, and usually operated in sequential order.
+* Centered on Operator(ALU)
+
+### 1.4.2 The diagram of von Neumann Computer
+
+![](C:\Users\MHB\Desktop\von Neumann diagram.png)
+
+This first kind of computer is centered on ALU. 
+
+***The Operator*** is used to finish arithmetic calculation and logic calculation , and the intermediate result of the operation is temporarily stored in it.
+
+***The Memory*** is used to stored data and program.
+
+***The Controller*** is used to control and command the input、operate、the processing calculating result of the program and data.
+
+***The Input and Output*** is used to transform the machine calculating result into our familiar information.
+
+Another kind of computer is centered on Memory , for the data and instructions are stored in it and centered on it can decrease the accessing time.
+
+### 1.4.3 Modern computer hardware diagram
+
+![](C:\Users\MHB\Desktop\_     Modern computer hardware diagram.png)
+
+The five main components of computer work orderly under the instructions of controller. 
+
+For the Operator and the Controller is related closed and always integrated in the same chip, So we always call them together as **CPU** (Central Processing Unit).Call the Input Device and the Output Device as I/O Device. Thus we can conclude that the modern computer consists of three parts: CPU、I/O Device and Main Memory. Besides, the CPU and the Main Memory together are called MainFrame. So , we can see the diagram.
+
+The **ALU** (Arithmetic Logic Unit) is used to finish Arithmetic Logic operations.
+
+The **CU** (Control Unit) is used to send out operation command to execute command.
+
+Thus the modern computer components diagram is as followed:
+
+![](C:\Users\MHB\Desktop\modern computer components diagram.png)
+
+## 1.5 Computer Working Process
+
+Generally, there are three periods:
+
+* Building a mathematical model
+* Determining the calculation method
+* Programming problem solving procedure
+
+Next , we are going to focus on the third period to see how the computer works.
+
+First, assuming that an instruction format example(the machine instruction word-length is sixteen bits) is: opcode with six bits and address code with ten bits.
+
+| Opcode(6 bits) | Address code(10 bits) |
+| :------------: | :-------------------: |
+
+if the opcode has the following meanings:
+
+| Opcode | operation |                           Content                            |
+| :----: | :-------: | :----------------------------------------------------------: |
+| 000001 |   Fetch   | Fetch the operand which is represented by the instruction address code and stored in the storage Unit to the Operator accumulator(ACC) |
+| 000010 |   Store   | Store the number in ACC in the Storage Unit according to  the Instruction address code |
+| 000011 |    Add    | Add the number in ACC and the number in the Storage Unit that is represented by the instruction address code together. Then store the result in ACC |
+| 000100 | Multiply  | Multiply the number in ACC and the number in the Storage Unit that is represented by the instruction address code together. Then store the result in ACC |
+| 000101 |   Print   | Print the operand in the Storage Unit which is represented by the instruction address code |
+| 000110 |   Stop    |                                                              |
+
+Assuming that we are going to calculate 
+$$
+ax^2 + bx + c
+$$
+![](C:\Users\MHB\Desktop\Instruction example.png)
+
+Now let us detail the working process.
+
+> Operator components
+
+**X** : Operand Register
+
+**ACC**: Accumulator
+
+**MQ**: Multiplier-Quotient Register
+
+|      |      +      |          -          |                *                |    /     |
+| :--: | :---------: | :-----------------: | :-----------------------------: | :------: |
+| ACC  | Augend、Sum | Minuend、Difference |        Product high bits        | Dividend |
+|  MQ  |             |                     | Multiplicator、Product low bits | Quotient |
+|  X   |   Addend    |     Subtrahend      |          Multiplicand           | Divisor  |
+
+> Controller components
+
+**PC**: Program Counter. Store the<u> current instructions address to be executed</u> , which counting function (PC)+1 ---> PC
+
+**IR**(Instruction Register): Holds the <u>current instruction to execute</u>
+
+**CU**: Control Unit
+
+In order to complete an instruction , there are two periods : ***Fetch*** and  ***Execute***
+
+for **Fetch** : including PC(Fetch instruction) 、IR（Analysis instruction）
+
+for **Execute** : CU(Executing instruction)
+
+---
+
+Then take an example of fetch instruction:
+
+![](C:\Users\MHB\Desktop\Detail fetch Instruction.png)
+
+First PC store the current instructions address to be executed, so the CU send the content to the MAR(PC-->MAR) and command the Memory to read.
+
+Then the MAR find the content in the Memory Bank(MAR--->M) , and get the instruction 0000010000001000 , and use MDR to store this instruction(M ----> MDR)
+
+Then the MDR send this instruction to IR and let it analysis the instruction(MDR ---> IR --- >CU(IR)).
+
+After analysis , the computer knows it is a fetch instruction (opcode is 000001) , then IR send the address code to Memory and let it return the number in the address code(0000001000)(IR---->MAR) 
+
+Then the MAR find the number in Memory Bank according to the address code , and return the number to the MDR(MAR---->M---->MDR)
+
+After get the number , MDR send it to the ACC in Operator.
+
+When finish above operations, the first Fetch instruction then finished. At the same time, PC update itself(PC + 1 ---> PC) . And execute the next instruction.  
+
+----
+
+A Very Important Conclusion !!!
+
+> [!IMPORTANT]
+>
+> From the above analysis , we can conclude that **although both instructions and the data in the von Neumann computer are stored in binary form in memory, the CPU can distinguish them on the basis that the different stages of the instruction cycle.**
 
