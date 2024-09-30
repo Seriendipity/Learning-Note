@@ -539,11 +539,11 @@ For arithmetic shift , it may be a little difficult. We need to discuss it accor
 
 This is how the hardware to implement the arithmetic shift.
 
-![](D:\Typora\MarkdownFile、\计组\2.Numerical Representation and Calculation\hardware_arithmetic_shift.png)
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/hardware_arithmetic_shift.png)
 
 For the logic shift , it is easy for the hardware to implement.
 
-![](D:\Typora\MarkdownFile、\计组\2.Numerical Representation and Calculation\hardware_logic_shift.png)
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/hardware_logic_shift.png)
 
 ## 2.3.2 Add Operation and Subtract Operation
 
@@ -580,58 +580,14 @@ $$
 > The 2\`s complement of -B has an easy way to calculate, that is , invert every bit of the 2\`s complement of B (including the sign bit) and add 1 at the end position.
 
 Take some examples:
-
-$$
-1.A = 0.1011 \quad B=-0.0101\quad [A+B]\_{2^\`}=? \qquad \qquad 
-$$
-
-$$
-[A]\_{2^\`}=0.1011 \quad [B]\_{2^\`}=1.1011 \quad Then \qquad \qquad 
-$$
-
-$$
-\begin{array}{r}
-[A]\_{2^\`}\quad 0.1011 \qquad \qquad \\
-+[B]\_{2^\`}\quad 1.1011\qquad \qquad \\
-\hline
-10.0110\qquad \qquad  
-\end{array}
-$$
-
-$$
-Thus\quad [A+B]\_{2^\`} = 0.0110 \qquad \qquad
-$$
-
-$$
-2. A = +15 \quad B=+ 24 \quad [A-B]_{2^1}=? \quad  A-B = ? \qquad \qquad \qquad \qquad  \\
-[A]_{2^`} =0,0001111 , [B]_{2^`} = 0,0011000 \quad Thus [-B]_{2^`} = 1,1101000 \\
-\begin{array}{r}
-[A]_{2^`} \quad 0,0001111 \qquad \qquad \\
-+[-B]_{2^`} \quad 1,1101000\qquad \qquad \\
-\hline
-1,1110111\qquad \qquad 
-\end{array}\\
-So [A-B]_{2^`} = 1,1110111 \quad [A-B]_{TF}=1,0001001  \quad A-B = -9
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example1.png)
 
 However sometimes, there will appear overflow. That is because the result is beyond the maximum number the computer can represent.
 
 Take an example:
 
 Assuming that the computer word-length is 8(including a sign bit). Let A = -93 , B = +45. Question: the 2\`s complement of A-B is ?
-
-$$
-A = -1011101\quad so\quad [A]_{2^`} = 1,0100011\\
-B = +0101101\quad so \quad [B]_{2^`} = 0,0101101\\
-Thus \quad [-B]_{2^`} = 1,1010011\\
-\begin{array}{r}
-[A]_{2^`} \quad 1,0100011\\
-+[-B]_{2^`} \quad 1,1010011\\
-\hline
-10,1110110
-\end{array}\\
-Thus \quad [A-B]_{2^`} = 0,1110110\quad
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example2.png)
 
 The true value of 0,1110110 is 118 , we all know the result is wrong for the real result should be -138. It is because the -138 is beyond the word-length 8 (128). So in the sum operation , it must judge the overflow.
 
@@ -660,34 +616,14 @@ When the two sign bits are different , there is an overflow , or there is no ove
 Take an example:
 
 Let x = +11/16 , y = + 3/16 , to calculate the result of x +y
-
-$$
-[x]_{TF} = 0.1011 \quad [y]_{TF}=0.0011 \\
-Thus \quad [x]_{2^`} = 00.1011 \quad [y]_{2^`} = 00.0011\\
-\begin{array}{r}
-[x]_{2^`} \quad 00.1011 \\
-[y]_{2^`} \quad 00.0011 \\
-\hline
-00.1110
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example3.png)
 
 Looking at this example , we can see that the result`s two sign bits are the same , so there is  no overflow
 
 Take another example:
 
 Let x = +11/16 , y = + 7/16 , to calculate the result of x + y
-
-$$
-[x]_{TF} = 0.1011 \quad [y]_{TF}=0.0111 \\
-Thus \quad [x]_{2^`} = 00.1011 \quad [y]_{2^`} = 00.0111\\
-\begin{array}{r}
-[x]_{2^`} \quad 00.1011 \\
-[y]_{2^`} \quad 00.0111 \\
-\hline
-01.0010
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example4.png)
 
 Looking at this example ,we see that the result\`s two sign bits are `01`  .So there is a positive overflow appear.
 
@@ -698,59 +634,15 @@ Looking at this example ,we see that the result\`s two sign bits are `01`  .So t
 Before talking about the multiply , let us look at how to use hand calculation to calculate the multiply.
 
 Let A = 0.1101 , B = 0.1011 , then to get the A * B
-
-$$
-\begin{array}{}
-\quad 0.1101 \\
-×0.1011 \\
-\hline
-\qquad 1101\\
-\qquad 1101 \quad\\
-0000\\
-1101 \quad \\
-\hline
-0.10001111
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example5.png)
 
 But this is very difficult for computer to implement this. Because the computer don\`t know how to add the four number together. It can\`t like human known the carry to each step. So there is an approved method
-
-$$
-A * B \\
-= A * 0.1011 \quad \quad \qquad \\
-\qquad \qquad  \qquad =0.1A + 0.00A + 0.001A + 0.0001A \\
-\qquad \qquad \quad =0.1A +0.00A +0.001(A + 0.1A)\\
-\qquad \qquad \qquad =0.1A + 0.01(0A + 0.1(A+0.1A))\\
-\qquad \qquad \qquad= 0.1(A + 0.1(0A + 0.1(A +0.1A) ))\\ 
-\qquad \qquad \qquad \qquad=2^{-1}\{A + 2^{-1}\{0A +2^{-1}\{A + 2^{-1}A\}\}\}\\
-\qquad \qquad \qquad \qquad \qquad =2^{-1}\{A + 2^{-1}\{0A +2^{-1}\{A + 2^{-1}\{A + 0\}\}\}\}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example6.png)
 
 **Thus the multiply can be seen as the shift and sum together.**
 
 So the computer calculation steps are :
-
-$$
-\begin{array}{}
-0.0000 \qquad 1011 \\
-+0.1101 \qquad \qquad \quad\\
-\hline
-0.1101 \qquad \qquad \\
-0.0110 \qquad 1101\\
-+0.1101 \qquad \qquad \quad\\
-\hline
-1.0011 \qquad \qquad \\
-0.1001 \qquad 1110\\
-+0.0000 \qquad \qquad \quad \\
-\hline
-0.1001 \qquad \qquad \\
-0.0100 \qquad 1111\\
-+0.1101 \qquad \qquad \quad \\
-\hline
-1.0001 \qquad \quad 111 \\
-0.1000 1111 \qquad 
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example7.png)
 
 At first the partial product is 0.0000. For the multiplier`s lowest bit is 1 , so the partial product need to add the multiplicand and get the new partial product. Then the partial product need to shift right one bit. And the multiplier is also 1 , so the partial product need to add the multiplicand and get the new partial product. Then the partial product need to shift right one bit. And now the multiplier is 0 , so the partial product need to add 0 and then shift right one bit. And the multiplier is also 1 , so the partial product need to add the multiplicand and get the new partial product. Finally shift right one bit to get the final result.
 
@@ -802,28 +694,7 @@ Take an example:
 Let x = 0.111111 , y = -0.111001 , to calculate  the true form of x*y.
 
 Before calculating the multiply , just need to calculate some machine number first.
-
-$$
-x^*=0.111111 \quad y^*=0.111001 \quad [-x^*]_{2^`}=1.000001 \quad 2x^*=1.111110\\
-\begin{array}{}
-000.000000 \qquad 00111001 \quad 0  \quad 010 \\
-+000.111111 \qquad \qquad \qquad \qquad \qquad \quad\\
-\hline
-000.111111 \qquad \qquad \qquad \qquad \qquad \\
-000.001111 \qquad 11001110 \quad 0 \quad 100\\
-+001.111110 \qquad \qquad \qquad \qquad \qquad \quad\\
-\hline
-010.001101 \qquad \qquad \qquad \qquad \qquad\\
-000.100011 \qquad 01110011 \quad 0 \quad 110\\
-+111.000001 \qquad \qquad \qquad \qquad \qquad \quad \\
-\hline
-111.100100 \qquad \qquad \qquad \qquad \qquad \\
-111.111001 \qquad 00011100 \quad 1 \quad 001\\
-+000.111111 \qquad \qquad \qquad \qquad \qquad \quad \\
-\hline
-000.111000 \quad \quad 000111 \qquad \qquad \quad
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example8.png)
 
 Thus the final result is 1.111000000111 
 
@@ -840,25 +711,7 @@ For 2\`s complement multiply , there are three types indeed .
 Take an Example:
 
 Let the 2\`s complement of x is 1.0101 , the 2\`s complement of y is 0.1101 , to calculate the 2\`s complement of x*y
-
-$$
-\begin{array}{}
-00.0000 \quad 1101 \\
-+11.0101 \qquad \qquad \\
-\hline
-11.0101 \qquad \quad  \\
-11.1010 \quad 1110 \\
-11.1101 \quad 0111\\
-+11.0101 \qquad \qquad\\
-\hline
-11.0010 \qquad \quad \\
-11.1001 \quad 0011 \\
-+11.0101 \qquad \qquad  \\
-\hline
-10.1110 \qquad \quad \\
-11.0111 \quad 0001
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example9.png)
 
  Thus the result of the 2\`s complement of x*y is 1.0111001
 
@@ -868,24 +721,7 @@ Take an Example:
 
 Let the 2\`s complement of x is 0.1101 , the 2\`s complement of y is 1.0101 , to calculate the 2\`s complement of x*y
 
-$$
-\begin{array}{}
-00.0000 \quad 0101\\
-+00.1101 \qquad \qquad\\
-\hline
-00.1101 \qquad \quad \\
-00.0110 \quad 1010\\
-00.0011 \quad 0101 \\
-+00.1101 \qquad \qquad \\
-\hline
-01.0000 \qquad \quad\\
-00.1000 \quad 0010\\
-00.0100 \quad 0001\\
-+11.0011 \quad correction \\
-\hline
-11.0111 \quad 0001
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example10.png)
 
 > [!IMPORTANT]
 >
@@ -916,28 +752,7 @@ Take an example:
 Let the 2\`s complement of x is 0.1101 , the 2\`s complement of y is 0.1011 , then calculate the 2\`s complement of x*y.
 
 First calculate the 2\`s complement of -x , that is 1.0011
-
-$$
-\begin{array}{}
-00.0000 \quad 010110 \quad 10\\
-+11.0011 \qquad \qquad \qquad \quad\\
-\hline
-11.0011 \qquad \qquad \qquad \\
-11.1001 \quad 101011 \quad 11\\
-11.1100 \quad 110101 \quad 01\\
-+00.1101 \qquad \qquad \qquad \quad \\
-\hline
-00.1001 \qquad \qquad \qquad \\
-00.0100 \quad 111010 \quad 10\\
-+11.0011 \qquad \qquad  \qquad \quad \\
-\hline
-11.0111 \qquad \qquad \qquad \\
-11.1011 \quad 111101 \quad 01\\
-+00.1101 \qquad \qquad \qquad \quad\\
-\hline
-00.1000 \quad 1111\qquad \quad 
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example11.png)
 
 Thus the result of the 2\`s complement x*y is  0.10001111
 
@@ -948,25 +763,7 @@ Take another example :
 Let the 2\`s complement of x is 1.0101 , the 2\`s complement of y is 1.0011 , then calculate the 2\`s complement of x*y
 
 Fist calculate the 2\`s complement of -x , that is 0.1011
-
-$$
-\begin{array}{}
-00.0000 \quad 100110 \quad 10\\
-+00.1011 \qquad \qquad \qquad \quad\\
-\hline
-00.1011 \qquad \qquad \qquad \\
-00.0101 \quad 110011 \quad 11\\
-00.0010 \quad 111001 \quad 01\\
-+11.0101 \qquad \qquad \qquad \quad \\
-\hline
-11.0111 \qquad \qquad \qquad  \\
-11.1011 \quad 111100 \quad 00\\
-11.1101 \quad 111110 \quad 10\\
-+00.1011 \qquad \qquad \qquad \quad \\
-\hline
-00.1000 \quad 1111 \qquad \quad
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example12.png)
 
 Thus the result of the 2\`s complement of x*y is 0.10001111
 
@@ -999,22 +796,6 @@ Take an Example：
 Let the 2\`s complement of x is 0.0101 , the 2\`s complement of y is 1.0101 , calculate the 2\`s complement of x*y
 
 First the 2\`s complement of -x is 1.1011
-
-$$
-\begin{array}{}
-000.0000 \quad 1101010 \quad 010 \\
-+000.0101 \qquad \qquad \qquad \qquad \\
-\hline
-000.0101 \qquad \qquad \qquad \quad\\
-000.0001 \quad 0111010 \quad 010 \\
-+000.0101 \qquad \qquad \qquad \qquad \\
-\hline
-000.0110 \qquad \qquad \qquad \quad \\
-000.0001 \quad 1001110 \quad 110 \\
-+111.1011 \qquad \qquad \qquad \qquad \\
-\hline
-111.1100 \quad 1001 \qquad \qquad 
-\end{array}
-$$
+![](https://github.com/Seriendipity/Learning-Note/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/2.Numerical%20Representation%20and%20Calculation/pictures/example13.png)
 
 Thus the result of the 2\`s complement of x* y is 1.11001001
