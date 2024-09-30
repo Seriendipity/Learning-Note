@@ -4,6 +4,7 @@
 
 > how to convert an integer into binary form
 
+
 It is vary familiar to us about how to convert an integer into binary form, the method called Except for 2, take the remainder method.
 
 Take an example, we are going to convert 12 to binary
@@ -495,3 +496,525 @@ so the exponent is 00000111 + 01111111 = 10000110
 the significand is `(1 is hidden)0110010001`0000000000000
 
 finally the IEEE 754 is 0`(sign bit)`10000110`(Exponent)`01100100010000000000000`(Significand)`
+
+# 2.3 Fixed point Operation
+
+For fixed point operations ,  there are `shift` 、`add`、`subtract`、`multiply`、`divide`. 
+
+## 2.3.1 Shift
+
+Shift operation is very common in our daily life. For example , 15 m can also be written as 1500 cm. 1500 can be see as the decimal point   right shift two positions. But when we consider it like this , we may find that the decimal point\`s position is floating , not fixed. So if we fix the position of the decimal point , we find 1500 can be seen as 15 left shift two position.
+
+Then we may consider why the complement position is 0 rather than 1 or other numbers. To answer this , let us definite the shift in computer.
+
+In computer, the position of decimal point is fixed. For there are two types of number : unsigned number and signed number , So there are two different rules to implement shift operation. The shift of `unsigned number` is called `logic shift`, the shift of `signed number` is called `arithmetic shift`.
+
+---
+
+For logic shift , it is very easy to solve. No matter it shift right or shift left , the complement number is always `0`.
+
+For arithmetic shift , it may be a little difficult. We need to discuss it according to its sign. The shift of  positive signed number has different rules compared with the negative signed number.
+
+| true value |                 type                 | complement number |
+| :--------: | :----------------------------------: | :---------------: |
+|  positive  | TF、1\`s complement、2\`s complement |         0         |
+|  negative  |                  TF                  |         0         |
+|  negative  |           1\`s complement            |         1         |
+|  negative  |      2\`s complement Left Shift      |         0         |
+|  negative  |     2\`s complement Right Shift      |         1         |
+
+> [!TIP]
+>
+> For positive machine number , the true form 、1\`s complement 、2`s complement and the true value is the same, so the shift complement is always 0 .
+>
+> **For negative true form** , the numeric parts is same with the true value ,so when it shifts , just set `0` to the blank bit.
+>
+> **For negative 1\`s complement** , the numeric parts is opposite to the true value , so the complement number should be opposite to the true form , that is `1`
+>
+> **For negative 2\`s complement**, we find that when we find the first appearance of 1 from right to the left , we find at the left (except this position of 1), the machine number is same with 1\`s complement , at the right (including this position of 1) , the machine number is same with the true form. So when it shift left , the blank appears at the low position, just like the true form set `0` .When it shift right , the blank appears at the high position , just like the 1\`s complement , set `1`
+
+> [!IMPORTANT]
+>
+> When the true value of the machine number neither overflow or underflow , we consider that **shift left one position is same with multiply 2 , shift right one position is same with divide 2.**
+
+This is how the hardware to implement the arithmetic shift.
+
+![](D:\Typora\MarkdownFile、\计组\2.Numerical Representation and Calculation\hardware_arithmetic_shift.png)
+
+For the logic shift , it is easy for the hardware to implement.
+
+![](D:\Typora\MarkdownFile、\计组\2.Numerical Representation and Calculation\hardware_logic_shift.png)
+
+## 2.3.2 Add Operation and Subtract Operation
+
+The Subtract Operation can be implemented by the Add Operation , so we consider them are the same.
+
+**The basic sum formula of 2\`s complement**
+
+$$
+For \quad Integer \quad [A]\_{2^\`} + [B]\_{2^\`} = [A+B]_{2^\`}(mod\quad2^{n+1}) 
+$$
+
+$$
+For \quad Decimal \quad [A]\_{2^\`} + [B]_{2^\`} =[A+B]\_{2^\`} (mod\quad 2)
+$$
+
+> [!IMPORTANT]
+>
+> The sum of the 2\`s complement operation consider equally for the sign bit and the numeric parts as long as there is no overflow .
+
+According to the sum formula , we can get the subtract formula
+
+**The basic subtract formula of 2\`s complement**
+
+$$
+For \quad Integer [A-B]\_{2^\`} = [A]\_{2^\`} + [-B]_{2^\`}(mod \quad 2^{n+1}) 
+$$
+
+$$
+For \quad Decimal [A-B]\_{2^\`} = [A]\_{2^\`} + [-B]_{2^\`}(mod \quad 2)
+$$
+
+> [!IMPORTANT]
+>
+> The 2\`s complement of -B has an easy way to calculate, that is , invert every bit of the 2\`s complement of B (including the sign bit) and add 1 at the end position.
+
+Take some examples:
+
+$$
+1.A = 0.1011 \quad B=-0.0101\quad [A+B]\_{2^\`}=? \qquad \qquad 
+$$
+
+$$
+[A]\_{2^\`}=0.1011 \quad [B]\_{2^\`}=1.1011 \quad Then \qquad \qquad 
+$$
+
+$$
+\begin{array}{r}
+[A]\_{2^\`}\quad 0.1011 \qquad \qquad \\
++[B]\_{2^\`}\quad 1.1011\qquad \qquad \\
+\hline
+10.0110\qquad \qquad  
+\end{array}
+$$
+
+$$
+Thus\quad [A+B]\_{2^\`} = 0.0110 \qquad \qquad
+$$
+
+$$
+2. A = +15 \quad B=+ 24 \quad [A-B]_{2^1}=? \quad  A-B = ? \qquad \qquad \qquad \qquad  \\
+[A]_{2^`} =0,0001111 , [B]_{2^`} = 0,0011000 \quad Thus [-B]_{2^`} = 1,1101000 \\
+\begin{array}{r}
+[A]_{2^`} \quad 0,0001111 \qquad \qquad \\
++[-B]_{2^`} \quad 1,1101000\qquad \qquad \\
+\hline
+1,1110111\qquad \qquad 
+\end{array}\\
+So [A-B]_{2^`} = 1,1110111 \quad [A-B]_{TF}=1,0001001  \quad A-B = -9
+$$
+
+However sometimes, there will appear overflow. That is because the result is beyond the maximum number the computer can represent.
+
+Take an example:
+
+Assuming that the computer word-length is 8(including a sign bit). Let A = -93 , B = +45. Question: the 2\`s complement of A-B is ?
+
+$$
+A = -1011101\quad so\quad [A]_{2^`} = 1,0100011\\
+B = +0101101\quad so \quad [B]_{2^`} = 0,0101101\\
+Thus \quad [-B]_{2^`} = 1,1010011\\
+\begin{array}{r}
+[A]_{2^`} \quad 1,0100011\\
++[-B]_{2^`} \quad 1,1010011\\
+\hline
+10,1110110
+\end{array}\\
+Thus \quad [A-B]_{2^`} = 0,1110110\quad
+$$
+
+The true value of 0,1110110 is 118 , we all know the result is wrong for the real result should be -138. It is because the -138 is beyond the word-length 8 (128). So in the sum operation , it must judge the overflow.
+
+### 2.3.2.1 One-bit Judge Overflow
+
+For sum , only when the operand are all positive or all negative , the overflow may appear.
+
+For subtract, only when the operand has opposite sign , the overflow may appear.
+
+`Definite`:  **If the highest bit carry of the numeric parts and the sign bit carry Exclusive OR result is 0 , there is no overflow ,or there is an overflow**.
+
+> [!IMPORTANT]
+>
+> When we use hand calculation , a simple way to judge overflow is to see whether there appear two positive number sum and get negative , two negative sum and get positive .
+
+Using this way to judge above example:
+
+1,0100011 + 1,1010011 the highest bit carry of the numeric parts is 0 but the sign bit carry is 1 . Then the Exclusive OR result is 1 , resulting the overflow.
+
+### 2.3.2.2 Two-bit Judge Overflow
+
+Using this way , we use two sign bits to represent the machine number. The highest sign bit is the real bit of the number.
+
+When the two sign bits are different , there is an overflow , or there is no overflow. If the sign bits are `01` , it means positive overflow. If the sign bits are `10` , it means negative overflow.
+
+Take an example:
+
+Let x = +11/16 , y = + 3/16 , to calculate the result of x +y
+
+$$
+[x]_{TF} = 0.1011 \quad [y]_{TF}=0.0011 \\
+Thus \quad [x]_{2^`} = 00.1011 \quad [y]_{2^`} = 00.0011\\
+\begin{array}{r}
+[x]_{2^`} \quad 00.1011 \\
+[y]_{2^`} \quad 00.0011 \\
+\hline
+00.1110
+\end{array}
+$$
+
+Looking at this example , we can see that the result`s two sign bits are the same , so there is  no overflow
+
+Take another example:
+
+Let x = +11/16 , y = + 7/16 , to calculate the result of x + y
+
+$$
+[x]_{TF} = 0.1011 \quad [y]_{TF}=0.0111 \\
+Thus \quad [x]_{2^`} = 00.1011 \quad [y]_{2^`} = 00.0111\\
+\begin{array}{r}
+[x]_{2^`} \quad 00.1011 \\
+[y]_{2^`} \quad 00.0111 \\
+\hline
+01.0010
+\end{array}
+$$
+
+Looking at this example ,we see that the result\`s two sign bits are `01`  .So there is a positive overflow appear.
+
+# 2.4 Multiply
+
+## 2.4.1 True form one-bit Multiply
+
+Before talking about the multiply , let us look at how to use hand calculation to calculate the multiply.
+
+Let A = 0.1101 , B = 0.1011 , then to get the A * B
+
+$$
+\begin{array}{}
+\quad 0.1101 \\
+×0.1011 \\
+\hline
+\qquad 1101\\
+\qquad 1101 \quad\\
+0000\\
+1101 \quad \\
+\hline
+0.10001111
+\end{array}
+$$
+
+But this is very difficult for computer to implement this. Because the computer don\`t know how to add the four number together. It can\`t like human known the carry to each step. So there is an approved method
+
+$$
+A * B \\
+= A * 0.1011 \quad \quad \qquad \\
+\qquad \qquad  \qquad =0.1A + 0.00A + 0.001A + 0.0001A \\
+\qquad \qquad \quad =0.1A +0.00A +0.001(A + 0.1A)\\
+\qquad \qquad \qquad =0.1A + 0.01(0A + 0.1(A+0.1A))\\
+\qquad \qquad \qquad= 0.1(A + 0.1(0A + 0.1(A +0.1A) ))\\ 
+\qquad \qquad \qquad \qquad=2^{-1}\{A + 2^{-1}\{0A +2^{-1}\{A + 2^{-1}A\}\}\}\\
+\qquad \qquad \qquad \qquad \qquad =2^{-1}\{A + 2^{-1}\{0A +2^{-1}\{A + 2^{-1}\{A + 0\}\}\}\}
+$$
+
+**Thus the multiply can be seen as the shift and sum together.**
+
+So the computer calculation steps are :
+
+$$
+\begin{array}{}
+0.0000 \qquad 1011 \\
++0.1101 \qquad \qquad \quad\\
+\hline
+0.1101 \qquad \qquad \\
+0.0110 \qquad 1101\\
++0.1101 \qquad \qquad \quad\\
+\hline
+1.0011 \qquad \qquad \\
+0.1001 \qquad 1110\\
++0.0000 \qquad \qquad \quad \\
+\hline
+0.1001 \qquad \qquad \\
+0.0100 \qquad 1111\\
++0.1101 \qquad \qquad \quad \\
+\hline
+1.0001 \qquad \quad 111 \\
+0.1000 1111 \qquad 
+\end{array}
+$$
+
+At first the partial product is 0.0000. For the multiplier`s lowest bit is 1 , so the partial product need to add the multiplicand and get the new partial product. Then the partial product need to shift right one bit. And the multiplier is also 1 , so the partial product need to add the multiplicand and get the new partial product. Then the partial product need to shift right one bit. And now the multiplier is 0 , so the partial product need to add 0 and then shift right one bit. And the multiplier is also 1 , so the partial product need to add the multiplicand and get the new partial product. Finally shift right one bit to get the final result.
+
+> [!IMPORTANT]
+>
+> The sign bit in True form one-bit multiply is based on the Exclusive OR result of the two sign bit. It doesn`t participant in the calculation procedure.
+
+## 2.4.2 True form two-bit Multiply
+
+In order to accelerate the speed , we can use the true form two-bit multiply.
+
+> [!IMPORTANT]
+>
+> The sign bit in True form two-bit multiply is the same with the one-bit multiply. It is based on the Exclusive OR result of the two sign bit. It doesn`t participant in the calculation procedure.
+
+One-bit multiply just look at one bit in the multiplier. So it need to add 0 or add one multiplicand to the partial product. But the two-bit multiply look at two bit in the multiplier, So it need to add 0 ~4 times multiplicand to the partial product. Thus came the following four status.
+
+| multiplier |                new partial product                |
+| :--------: | :-----------------------------------------------: |
+|     00     |          add 0 and shift right two bits           |
+|     01     | add 1 times multiplicand and shift right two bits |
+|     10     | add 2 times multiplicand and shift right two bits |
+|     11     | add 3 times multiplicand and shift right two bits |
+
+For add 0~2 times multiplicand , It is easy for computer to implement. For add 2 times multiplicand , it just need to shift left one bit of the multiplicand and add it to calculate. But for add 3 times multiplicand , it seems difficult to implement. In order to get 3 times multiplicand , we use 4-1 = 3 , that is first use the partial product minus 1 times multiplicand ,and then shift left two bits of the multiplicand , then add it. However, add 4 times multiplicand is completed by the higher two bits , it adds 1 . In order to implement this operation , we need a flag bit to sign it.
+
+| multiplier judge bits | flag bit |                          operations                          |
+| :-------------------: | :------: | :----------------------------------------------------------: |
+|          00           |    0     | z shift right two bits and y* shift right two bits , the flag bit set 0 |
+|          01           |    0     | z + x* first ,then shift right two bits , and y* shift right two bits, the flag set 0 |
+|          10           |    0     | z + 2x* first , then shift right two bits and y* shift right two bits, the flag set 0 |
+|          11           |    0     | z -x* first , then shift right two bits and y* shift right two bits , the flag set 1 |
+|          00           |    1     | z + x* first ,then shift right two bits , and y* shift right two bits, the flag set 0 |
+|          01           |    1     | z + 2x* first , then shift right two bits and y* shift right two bits, the flag set 0 |
+|          10           |    1     | z -x* first , then shift right two bits and y* shift right two bits , the flag set 1 |
+|          11           |    1     | z shift right two bits and y* shift right two bits , the flag bit set 1 |
+
+For it need to add 2 time multiplicand , so we need to use three sign bits to complete the operation , and the highest sign bit is the real sign of the machine number.
+
+> [!IMPORTANT]
+>
+> According to the bits of multiplier , it need to add 0 first . 
+>
+> * If the bits of the multiplier is even , add two zero before the highest numerical parts
+> * if the bits of the multiplier is odd , add one zero before the highest numerical parts
+
+Take an example:
+
+Let x = 0.111111 , y = -0.111001 , to calculate  the true form of x*y.
+
+Before calculating the multiply , just need to calculate some machine number first.
+
+$$
+x^*=0.111111 \quad y^*=0.111001 \quad [-x^*]_{2^`}=1.000001 \quad 2x^*=1.111110\\
+\begin{array}{}
+000.000000 \qquad 00111001 \quad 0  \quad 010 \\
++000.111111 \qquad \qquad \qquad \qquad \qquad \quad\\
+\hline
+000.111111 \qquad \qquad \qquad \qquad \qquad \\
+000.001111 \qquad 11001110 \quad 0 \quad 100\\
++001.111110 \qquad \qquad \qquad \qquad \qquad \quad\\
+\hline
+010.001101 \qquad \qquad \qquad \qquad \qquad\\
+000.100011 \qquad 01110011 \quad 0 \quad 110\\
++111.000001 \qquad \qquad \qquad \qquad \qquad \quad \\
+\hline
+111.100100 \qquad \qquad \qquad \qquad \qquad \\
+111.111001 \qquad 00011100 \quad 1 \quad 001\\
++000.111111 \qquad \qquad \qquad \qquad \qquad \quad \\
+\hline
+000.111000 \quad \quad 000111 \qquad \qquad \quad
+\end{array}
+$$
+
+Thus the final result is 1.111000000111 
+
+> [!IMPORTANT]
+>
+> When there are `110` or `101` , we need to add the 2\`s complement of -x . After that time ,all the operations should follow the rules of 2\`s complement. 
+
+## 2.4.3 2\`s complement multiply(Booth`s algorithm)
+
+For 2\`s complement multiply , there are three types indeed . 
+
+**For the first method **, **that is no matter the multiplicand is positive or negative , the multiplier must be positive**. Then it is the same as the True form one-bit multiply , but the rule should follow the 2\`s complement.
+
+Take an Example:
+
+Let the 2\`s complement of x is 1.0101 , the 2\`s complement of y is 0.1101 , to calculate the 2\`s complement of x*y
+
+$$
+\begin{array}{}
+00.0000 \quad 1101 \\
++11.0101 \qquad \qquad \\
+\hline
+11.0101 \qquad \quad  \\
+11.1010 \quad 1110 \\
+11.1101 \quad 0111\\
++11.0101 \qquad \qquad\\
+\hline
+11.0010 \qquad \quad \\
+11.1001 \quad 0011 \\
++11.0101 \qquad \qquad  \\
+\hline
+10.1110 \qquad \quad \\
+11.0111 \quad 0001
+\end{array}
+$$
+
+ Thus the result of the 2\`s complement of x*y is 1.0111001
+
+**For the second method** , **that is no matter the multiplicand is positive or negative ,the multiplier must be negative**. Then it is the same as the first method but need to add the 2\`s complement as a correction.
+
+Take an Example:
+
+Let the 2\`s complement of x is 0.1101 , the 2\`s complement of y is 1.0101 , to calculate the 2\`s complement of x*y
+
+$$
+\begin{array}{}
+00.0000 \quad 0101\\
++00.1101 \qquad \qquad\\
+\hline
+00.1101 \qquad \quad \\
+00.0110 \quad 1010\\
+00.0011 \quad 0101 \\
++00.1101 \qquad \qquad \\
+\hline
+01.0000 \qquad \quad\\
+00.1000 \quad 0010\\
+00.0100 \quad 0001\\
++11.0011 \quad correction \\
+\hline
+11.0111 \quad 0001
+\end{array}
+$$
+
+> [!IMPORTANT]
+>
+> If the multiplier is negative and the multiplicand is positive , and you don`t want to use the second method , you can change the multiplier and the multiplicand , then you can use the first method to solve the problem.
+
+---
+
+For the third method , it is an integrated method. No matter the sign of multiplier and multiplicand is positive or negative , this method is OK. That is **Booth`s algorithm**.
+
+Booth\`s algorithm depend on the multiplier\`s status. It looks at the two lowest bits. Here are the status.
+
+| Two bits |                           Content                            |
+| :------: | :----------------------------------------------------------: |
+|    00    |             partial product shift right two bits             |
+|    01    | partial product add 2\`s complement of x and then shift right two bits |
+|    10    | partial product add 2\`s complement of -x and then shift right two bits |
+|    11    |             partial product shift right two bits             |
+
+> [!IMPORTANT]
+>
+> This method need to add 0 or 1 before the numeric parts and after the numeric parts. 
+>
+> * No matter the multiplier is positive or negative , after the numeric parts need to add  a `0`
+> * If the multiplier is positive , before the numeric parts need to add `0` or add `1`.
+
+Take an example:
+
+Let the 2\`s complement of x is 0.1101 , the 2\`s complement of y is 0.1011 , then calculate the 2\`s complement of x*y.
+
+First calculate the 2\`s complement of -x , that is 1.0011
+
+$$
+\begin{array}{}
+00.0000 \quad 010110 \quad 10\\
++11.0011 \qquad \qquad \qquad \quad\\
+\hline
+11.0011 \qquad \qquad \qquad \\
+11.1001 \quad 101011 \quad 11\\
+11.1100 \quad 110101 \quad 01\\
++00.1101 \qquad \qquad \qquad \quad \\
+\hline
+00.1001 \qquad \qquad \qquad \\
+00.0100 \quad 111010 \quad 10\\
++11.0011 \qquad \qquad  \qquad \quad \\
+\hline
+11.0111 \qquad \qquad \qquad \\
+11.1011 \quad 111101 \quad 01\\
++00.1101 \qquad \qquad \qquad \quad\\
+\hline
+00.1000 \quad 1111\qquad \quad 
+\end{array}
+$$
+
+Thus the result of the 2\`s complement x*y is  0.10001111
+
+---
+
+Take another example :
+
+Let the 2\`s complement of x is 1.0101 , the 2\`s complement of y is 1.0011 , then calculate the 2\`s complement of x*y
+
+Fist calculate the 2\`s complement of -x , that is 0.1011
+
+$$
+\begin{array}{}
+00.0000 \quad 100110 \quad 10\\
++00.1011 \qquad \qquad \qquad \quad\\
+\hline
+00.1011 \qquad \qquad \qquad \\
+00.0101 \quad 110011 \quad 11\\
+00.0010 \quad 111001 \quad 01\\
++11.0101 \qquad \qquad \qquad \quad \\
+\hline
+11.0111 \qquad \qquad \qquad  \\
+11.1011 \quad 111100 \quad 00\\
+11.1101 \quad 111110 \quad 10\\
++00.1011 \qquad \qquad \qquad \quad \\
+\hline
+00.1000 \quad 1111 \qquad \quad
+\end{array}
+$$
+
+Thus the result of the 2\`s complement of x*y is 0.10001111
+
+## 2.4.4(Option) 2\`s complement Two-bit Multiply
+
+In order to accelerate the speed of calculating , we can use Two-bit multiply to calculate the 2\`s complement multiply operation.
+
+This method depends the three bits of the lowest bits. Here are the status.
+
+| Judge bits |                           content                            |
+| :--------: | :----------------------------------------------------------: |
+|    000     |             partial product shift right two bits             |
+|    001     | partial product add the 2\`s complement of x first and then shift right two bits |
+|    010     | partial product add the 2\`s complement of x first and then shift right two bits |
+|    011     | partial product add two times  the 2\`s complement of x and then shift right two bits |
+|    100     | partial product add two times  the 2\`s complement of -x and then shift right two bits |
+|    101     | partial product add the 2\`s complement of -x first and then shift right two bits |
+|    110     | partial product add the 2\`s complement of -x first and then shift right two bits |
+|    111     |             partial product shift right two bits             |
+
+> [!IMPORTANT]
+>
+> This method need to add 0 or 1 before the numeric parts and after the numeric parts. 
+>
+> * No matter the multiplier is positive or negative , after the numeric parts need to add  a `0`
+> * If the multiplier is positive , before the numeric parts need to add `0` or add `1` twice.
+
+Take an Example：
+
+Let the 2\`s complement of x is 0.0101 , the 2\`s complement of y is 1.0101 , calculate the 2\`s complement of x*y
+
+First the 2\`s complement of -x is 1.1011
+
+$$
+\begin{array}{}
+000.0000 \quad 1101010 \quad 010 \\
++000.0101 \qquad \qquad \qquad \qquad \\
+\hline
+000.0101 \qquad \qquad \qquad \quad\\
+000.0001 \quad 0111010 \quad 010 \\
++000.0101 \qquad \qquad \qquad \qquad \\
+\hline
+000.0110 \qquad \qquad \qquad \quad \\
+000.0001 \quad 1001110 \quad 110 \\
++111.1011 \qquad \qquad \qquad \qquad \\
+\hline
+111.1100 \quad 1001 \qquad \qquad 
+\end{array}
+$$
+
+Thus the result of the 2\`s complement of x* y is 1.11001001
